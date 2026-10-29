@@ -6,6 +6,8 @@ import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeApplicationEntryPoint.loadReactNative
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
+import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags
+import com.facebook.react.internal.featureflags.ReactNativeNewArchitectureFeatureFlagsDefaults
 
 class MainApplication : Application(), ReactApplication {
 
@@ -23,5 +25,12 @@ class MainApplication : Application(), ReactApplication {
   override fun onCreate() {
     super.onCreate()
     loadReactNative(this)
+    // The only change from the template: turn on useTraitHiddenOnAndroid. With it on, the
+    // ScrollView in NewAppScreen crashes the app as soon as it mounts.
+    ReactNativeFeatureFlags.dangerouslyForceOverride(
+      object : ReactNativeNewArchitectureFeatureFlagsDefaults() {
+        override fun useTraitHiddenOnAndroid(): Boolean = true
+      },
+    )
   }
 }
